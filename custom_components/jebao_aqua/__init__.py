@@ -61,9 +61,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 LOGGER.debug(f"Discovered devices: {discovered_devices}")
 
         for platform in PLATFORMS:
-            hass.async_create_task(
-                hass.config_entries.async_forward_entry_setup(entry, platform)
-            )
+            await hass.config_entries.async_forward_entry_setup(entry, platform)
 
     return True
 
@@ -79,6 +77,7 @@ class GizwitsDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch the initial list of devices and add LAN IPs."""
         try:
             response = await self.api.get_devices()
+            LOGGER.debug(f"Response from API: {response}")
             if response and "devices" in response:
                 self.device_inventory = response["devices"]
                 
